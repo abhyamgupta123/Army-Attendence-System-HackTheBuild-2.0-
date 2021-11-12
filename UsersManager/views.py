@@ -61,7 +61,6 @@ class UserRegistrationView(APIView):
                 else:                                                               
                     # print("regitsered with {} and {}".format(login_name, userPassword))
                     user = User.objects.create_user(username=login_name, password=userPassword, email=email)
-                    user.save()
 
                     # now asking for reading Card
                     print("Place your card on sensor to refister Yourself")
@@ -77,6 +76,7 @@ class UserRegistrationView(APIView):
                         return Response({"error": "User Already Registered with Given Attendence Card"}, status = 501)
                     
                     UserProfile.objects.create(user = user, uid = _id)
+                    user.save()
                     print("user created succesfuly")
                     return Response({"message": "User Registered Sucessfully"}, status = HTTP_200_OK)
 
