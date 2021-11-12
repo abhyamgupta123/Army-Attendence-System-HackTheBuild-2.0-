@@ -75,13 +75,13 @@ def markAttendence(dataString: str) -> str:
     for i in range(1, total_days+1):
         days[i] = "0"
 
+    for j in range(1, len(dataString)+1):
+        days[j] = dataString[j-1]
+
     today = datetime.datetime.today().day
 
     # marking attendence
     days[today] = "1"
-
-    for j in range(1, len(dataString)+1):
-        days[j] = dataString[j-1]
 
     ans = ""
 
@@ -109,3 +109,18 @@ def markAttendence(dataString: str) -> str:
 
     return ans.strip()
 
+def getAttendenceFromString(dataString: str):
+
+    dataString = dataString.strip()[3:]
+
+    total_days = monthrange(int(getYear()), int(getMonth()))[1]
+    days = {}
+
+    for i in range(1, total_days+1):
+        days[i] = "0"
+
+    for j in range(1, len(dataString)+1):
+        days[j] = dataString[j-1]
+
+    return days
+        

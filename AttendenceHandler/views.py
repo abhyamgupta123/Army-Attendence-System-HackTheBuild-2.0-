@@ -1,8 +1,9 @@
 from django.shortcuts import render
 
 from .utils import (
-    markAttendence, 
-    writeData, 
+    getAttendenceFromString,
+    markAttendence,
+    writeData,
     readCardData,
     verifyCard,
     getMonth,
@@ -77,7 +78,6 @@ class FormatCard(APIView):
         return Response({"message": "Card formatted Sucessfully"}, status = 200)
 
 class VerifyCard(APIView):
-
     def post(self, request, *args, **kwargs):
         print("Place Your card on Scanner!")
 
@@ -98,3 +98,28 @@ class VerifyCard(APIView):
         else:
             return Response({"error": "The card is not Supported. Please Scan the verified attendence card only."}, status = 401)
     
+
+class CalculateAttendence(APIView):
+
+    def post(self, request, *args, **kwargs):
+        print("Place your card on Sensor!")
+
+        text, _uid = readCardData()
+
+        if text is None:
+            return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
+
+        profile = UserProfile.objects.filter(uid = str(_uid)).first()
+
+        atten_obj = getAttendenceFromString(text)
+
+        return Response({"message": "Your attendence is obtained Sucessfully!",
+                         "Username": profile.user.username,
+                         "Email": profile.user.email,
+                         "month": getMonth(),
+                         "year": getYear(),
+                         "data": atten_obj}, status = 200)
+
+
+        
+
