@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-glkn*5z8=h2((y%w-0mwgzwd5nxf*2e4jv8v(uty^jod=cj(=f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+    'rest_framework.authtoken',
+    'UsersManager',
+    'AttendenceHandler',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +71,12 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 WSGI_APPLICATION = 'ArmyAttendenceProject.wsgi.application'
 
