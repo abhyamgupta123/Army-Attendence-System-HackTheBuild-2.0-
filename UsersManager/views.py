@@ -6,8 +6,12 @@ from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from .utils import readCard, formatCard
+from .utils import (
+    readCard, 
+    formatCard
+)
 from .models import UserProfile
+
 import datetime
 
 # for using restframework JWT tocken system
@@ -84,7 +88,7 @@ class UserRegistrationView(APIView):
 
 class FormatUser(APIView):
 
-    def post(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         login_name = request.data.get('username', None)
         # userPassword = request.data.get('loginpass', None)
         
