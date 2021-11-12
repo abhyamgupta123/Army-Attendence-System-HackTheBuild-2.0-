@@ -1,1 +1,7 @@
 Django==3.2
+djangorestframework==3.11.0
+djangorestframework-simplejwt==4.7.1
+mfrc522
+spidev
+RPi.GPIO
+typing-extensions
