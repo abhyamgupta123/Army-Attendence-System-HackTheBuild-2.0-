@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from .utils import readCard
+from .utils import readCard, formatCard
 from .models import UserProfile
 
 # for using restframework JWT tocken system
@@ -59,14 +59,16 @@ class UserRegistrationView(APIView):
 
                     # now asking for reading Card
                     print("Place your card on sensor to refister Yourself")
+                    formatCard()
                     _id = readCard()
 
-                    if _id is not None:
-                        UserProfile.objects.create(user = user, uid = _id, attendence_string="")
-                        print("user created succesfuly")
-                        return Response({"message": "User Registered Sucessfully"}, status = HTTP_200_OK)
-                    else:
+                    if _id is None:
                         return Response({"error": "Card Not Verified Sucessfully"}, status = 501)
+                    
+                    UserProfile.objects.create(user = user, uid = _id, attendence_string="ATT")
+                    print("user created succesfuly")
+                    return Response({"message": "User Registered Sucessfully"}, status = HTTP_200_OK)
+
 
         else:
             # messages.info(request, "Password Doesn't Matched", fail_silently=True)
