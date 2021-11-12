@@ -11,24 +11,29 @@ def validator(dataString: str):
 
     print("===>", len(dataString), dataString)
     if len(dataString.strip()) == 0:
+        print("v")
         return False
 
     if dataString.strip()[:3] != "ATT":
+        print("u")
         return False
 
-    startDateString = f"{getYear()}-{getMonth()}-{1}"
-    startMonthDate = datetime.datetime.strptime(startDateString, "%Y-%m-%d")
+    # startDateString = f"{getYear()}-{getMonth()}-{1}"
+    # startMonthDate = datetime.datetime.strptime(startDateString, "%Y-%m-%d")
 
-    today = datetime.datetime.today()
+    # today = datetime.datetime.today()
     
-    differnce = (today - startMonthDate).days
+    # differnce = (today - startMonthDate).days
 
-    if len(dataString) >= differnce-1:
-        return False
+    # if len(dataString)-3 >= differnce-1:
+    #     print("s")
+    #     return False
 
     for i in dataString[3:]:
-        if i != "0" or i != "1":
-            return False
+        if i != "0": 
+            if i != "1":
+                print("t", i)
+                return False
         
     return True
 

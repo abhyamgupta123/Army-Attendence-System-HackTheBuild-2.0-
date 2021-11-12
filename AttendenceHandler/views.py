@@ -3,10 +3,21 @@ from django.shortcuts import render
 from .utils import (
     markAttendence, 
     writeData, 
-    readCardData
+    readCardData,
+    verifyCard,
+    getMonth,
+    getYear
 )
 
+from UsersManager.utils import formatCard
+from UsersManager.models import UserProfile
+
+from django.contrib.auth.models import User
+
+import datetime
+
 from .validators import validator
+from .models import Attendence
 # from .models import 
 
 from rest_framework.views import APIView
@@ -23,8 +34,12 @@ class RecordAttendence(APIView):
 
     def post(self, request, *args, **kwargs):
         print("Place Your card on Scanner!")
-        dataString = readCardData()
+        dataString, _uid = readCardData()
         
+        profile = UserProfile.objects.filter(uid = str(_uid)).first()
+        if profile is None:
+            return Response({"error": "This card is Invalid or doesn't belongs to any user."}, status = 501)
+
         if dataString is None:
             return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
 
@@ -38,7 +53,48 @@ class RecordAttendence(APIView):
                 return Response({"error": "Error occureed while marking your attendence Try Again."}, status = 501)
             
             if response == 1:
+                _user = profile.user
+
+                startDateString = f"{getYear()}-{getMonth()}-{1}"
+                startMonthDate = datetime.datetime.strptime(startDateString, "%Y-%m-%d")
+
+                Attendence.objects.create(user=_user, month=startMonthDate, att_string=attendence_string[3:])
                 return Response({"message": "Attendence marked sucessfully!"}, status = HTTP_200_OK)
 
         else:
             return Response({"error": "The card is not Supported. Please Scan the verified attendence card only."}, status = 401)
+
+
+class FormatCard(APIView):
+    def post(self, request, *args, **kwargs):
+        print("Place your card on the Sensor to format it.")
+        res = formatCard()
+        if res is None:
+            print("Card couldn't be formated due to some reason, Please Try Again!")
+            return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
+
+        print("Card formatted Sucessfully")
+        return Response({"message": "Card formatted Sucessfully"}, status = 200)
+
+class VerifyCard(APIView):
+
+    def post(self, request, *args, **kwargs):
+        print("Place Your card on Scanner!")
+
+        _uid, text = verifyCard()
+
+        if _uid is None:
+            return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
+
+        if validator(text.strip()):
+            profile = UserProfile.objects.filter(uid = str(_uid)).first()
+            if profile is None:
+                return Response({"message": "This card is Invalid or doesn't belongs to any user."}, status = 404)
+            
+            return Response({"message": "The card belongs to this Organization.",
+                             "Username": profile.user.username,
+                             "Email": profile.user.email}, status = 200)
+    
+        else:
+            return Response({"error": "The card is not Supported. Please Scan the verified attendence card only."}, status = 401)
+    

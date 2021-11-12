@@ -5,3 +5,4 @@ mfrc522
 spidev
 RPi.GPIO
 typing-extensions
+django-cors-headers

@@ -4,6 +4,6 @@ from .models import UserProfile
 
 
 class UserProfileTable(admin.ModelAdmin):
-    list_display = ("user", "uid", "attendence_string")
+    list_display = ("user", "uid")
 
 admin.site.register(UserProfile, UserProfileTable)

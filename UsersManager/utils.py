@@ -22,8 +22,8 @@ def readCard():
 
 def formatCard():
     try:
-            RF_obj.write("ATT")
-            return 1
+        RF_obj.write("ATT")
+        return 1
 
     except Exception as e:
         print("error occured while reading card")

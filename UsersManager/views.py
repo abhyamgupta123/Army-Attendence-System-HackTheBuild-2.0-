@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 
 from .utils import readCard, formatCard
 from .models import UserProfile
+import datetime
 
 # for using restframework JWT tocken system
 from rest_framework.views import APIView
@@ -44,8 +45,9 @@ class UserRegistrationView(APIView):
                 return Response({"error": "Email must be unique"}, status = 501)
 
             else:                                                                   
-                if(userPassword.isalnum()):                                         
+                if not (userPassword.isalnum()):                                         
                     # messages.info(request, "Password must be alphanumeric", fail_silently=True)
+                    print(userPassword)
                     return Response({"error": "Password must be alphanumeric"}, status = 501)
 
                 elif(len(userPassword) <8):                                         
@@ -59,13 +61,18 @@ class UserRegistrationView(APIView):
 
                     # now asking for reading Card
                     print("Place your card on sensor to refister Yourself")
-                    formatCard()
-                    _id = readCard()
+                    res = formatCard()
+                    if res is None:
+                        return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
 
+                    _id = readCard()
                     if _id is None:
                         return Response({"error": "Card Not Verified Sucessfully"}, status = 501)
                     
-                    UserProfile.objects.create(user = user, uid = _id, attendence_string="ATT")
+                    if UserProfile.objects.filter(uid=_id).exists():
+                        return Response({"error": "User Already Registered with Given Attendence Card"}, status = 501)
+                    
+                    UserProfile.objects.create(user = user, uid = _id)
                     print("user created succesfuly")
                     return Response({"message": "User Registered Sucessfully"}, status = HTTP_200_OK)
 
@@ -73,7 +80,57 @@ class UserRegistrationView(APIView):
         else:
             # messages.info(request, "Password Doesn't Matched", fail_silently=True)
             return Response({"error": "Passwords do not match"}, status = 501)
-            
+
+
+class FormatUser(APIView):
+
+    def post(self, request, *args, **kwargs):
+        login_name = request.data.get('username', None)
+        # userPassword = request.data.get('loginpass', None)
+        
+        user_model = User.objects.filter(username=login_name).first()
+
+        if user_model is None:
+            return Response({"error": "User not found with given Username"}, status = 404)
+
+        print("Place your card to delete your data")
+        _id = readCard()
+        if _id is None:
+            return Response({"error": "Card was not placed on Sensor Properly."}, status = 501)
+
+        profile = UserProfile.objects.filter(uid=_id).first()
+
+        if profile is None:
+            user_model.delete()
+
+            print("Place your card on sensor to refister Yourself")
+            res = formatCard()
+            if res is None:
+                return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
+
+            return Response({"message": "This card is not Associated with any user yet."}, status = 200)
+
+
+        if profile.user.username == login_name:
+            user_model.delete()
+
+            print("Place your card on sensor to refister Yourself")
+            res = formatCard()
+            if res is None:
+                return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
+
+            return Response({"message": "User Deleted Sucessfully."}, status = 200)
+
+        return Response({"error": "Card doesn't match with its owner."}, status = 501)
+
+
+class Testing(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return Response({"message": "everything is good"}, status = 200)
+
+
 
 # @method_decorator(csrf_exempt, name='dispatch')
 # class Userlogin(APIView):
@@ -97,9 +154,3 @@ class UserRegistrationView(APIView):
 #                         status=HTTP_200_OK)
 
 # @method_decorator(csrf_exempt, name='dispatch')
-
-class Testing(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        return Response({"message": "everything is good"}, status = 200)
