@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Register</title>
+</head>
+<body>
+    <div class="navbar">
+        <a href="./index.html">Attendance</a>
+        <ul>
+            <li><a href="./register.html">Register</a></li>
+            <li><a href="./login.html" style="color:springgreen">Login</a></li>
+            <li><a href="./format.html">Format</a></li>
+            <li><a href="./delete.html">Delete User</a></li>
+            <li><a href="./vAttCardScan.html">Mark Attnedance</a></li>
+            <li><a onclick="()=>localStorage.removeItem('token')" style="cursor:pointer">Logout</a></li>
+
+
+        </ul>
+    </div>
+    <div class="registerContainer">
+        <div class="registerMain">
+            <div class="heading">
+                <h1>Format/Verify</h1>
+            </div>
+            <div id="forbody">
+            <button class="std-button" onclick="handleFormatCard('formatCard')">
+                Format
+            </button>
+            <button class="std-button" onclick="handleFormatCard('verifyCard')">
+                Verify
+            </button>
+
+            </div>
+            <div class="scanYourCard" style="width:100%" id="forsyc">
+                <h1>Scan Your Card</h1>
+            </div>
+            <div id="forres">
+                <div 
+                style="width:100%;height:10rem;display:grid;"
+                class="scanYourCard"
+                id="forrestext"
+                >
+                    <h1>Done successfully</h1>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="./script.js"></script>
+    <script src="./jquery.js"></script>
+</body>
+</html>

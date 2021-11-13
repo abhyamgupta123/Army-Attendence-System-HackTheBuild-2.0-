@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="./index.html">Attendance</a>
+        <ul>
+            <li><a href="./register.html">Register</a></li>
+            <li><a href="./login.html" style="color:springgreen">Login</a></li>
+            <li><a href="./format.html">Format</a></li>
+            <li><a href="./delete.html">Delete User</a></li>
+            <li><a href="./vAttCardScan.html">Mark Attnedance</a></li>
+            <li><a onclick="()=>localStorage.removeItem('token')" style="cursor:pointer">Logout</a></li>
+
+
+        </ul>
+    </div>
+    <div class="homeContainer">
+        <button class="markYourAttendance"
+        onclick="handleMarkAttendance()"
+        >
+            <h1>Mark Your Attendance</h1>
+        </button>
+        <div class="scanYourCard" id="syc">
+            <h1>Scan Your Card</h1>
+        </div>
+        <div class="successMsgContainer" id="smc">
+             <h1>Your attendance marked successfully.</h1>
+        </div>
+        <div class="errorMsgContainer" id="errmya">
+            <h1 id="errmyamsg">Error Message</h1>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+    <script type="text/javascript" src="./jquery.js"></script>
+</body>
+</html>

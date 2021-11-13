@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="./index.html">Attendance</a>
+        <ul>
+            <li><a href="./register.html">Register</a></li>
+            <li><a href="./login.html" style="color:springgreen">Login</a></li>
+            <li><a href="./format.html">Format</a></li>
+            <li><a href="./delete.html">Delete User</a></li>
+            <li><a href="./vAttCardScan.html">Mark Attnedance</a></li>
+            <li><a onclick="()=>localStorage.removeItem('token')" style="cursor:pointer">Logout</a></li>
+
+
+        </ul>
+    </div>
+    <div class="bodyDashboard">
+       <h1>Your All Attendances</h1>
+       <div id="headingDB">
+       </div>
+       <div id="subtitleDB">
+
+       </div>
+       <div id="bodyDB">
+
+       </div>
+    </div>
+
+    <script src="./jquery.js"></script>
+    <script src="./script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded',() => {
+            getInfoDashboard()
+        });
+    </script>
+</body>
+</html>
