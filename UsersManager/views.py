@@ -1,8 +1,6 @@
 from django.shortcuts import render
-
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
@@ -11,8 +9,11 @@ from .utils import (
     formatCard
 )
 from .models import UserProfile
+from AttendenceHandler.utils import getAttendenceFromString
+from AttendenceHandler.models import Attendence
 
 import datetime
+import json
 
 # for using restframework JWT tocken system
 from rest_framework.views import APIView
@@ -105,23 +106,23 @@ class FormatUser(APIView):
         profile = UserProfile.objects.filter(uid=_id).first()
 
         if profile is None:
-            user_model.delete()
-
             print("Place your card on sensor to refister Yourself")
             res = formatCard()
             if res is None:
                 return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
+
+            user_model.delete()
 
             return Response({"message": "This card is not Associated with any user yet."}, status = 200)
 
 
         if profile.user.username == login_name:
-            user_model.delete()
-
             print("Place your card on sensor to refister Yourself")
             res = formatCard()
             if res is None:
                 return Response({"error": "Card Not Scanned Sucessfully"}, status = 501)
+
+            user_model.delete()
 
             return Response({"message": "User Deleted Sucessfully."}, status = 200)
 
@@ -129,10 +130,85 @@ class FormatUser(APIView):
 
 
 class Testing(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return Response({"message": "everything is good"}, status = 200)
+
+
+class AdminHandler(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        _user = request.user
+
+        if _user.is_superuser:
+            profiles = UserProfile.objects.all()
+
+            data = {}
+            for profile in profiles:
+                _uid = profile.uid
+                atten_objs_for_single_user = Attendence.objects.filter(user = profile.user)
+                atten_for_user = {}
+                for all_atten in atten_objs_for_single_user:
+                    attendences_of_month = getAttendenceFromString(all_atten.att_string)
+                    atten_for_user[str(all_atten.month)] = attendences_of_month
+
+                data[profile.user.username] = atten_for_user
+            
+            return Response({"message": "Data Recieved Sucessfully", 
+                             "admin":True,
+                             "username": _user.username,
+                             "data": data}, status = 200)
+
+        else:
+            user_profile = UserProfile.objects.filter(user = _user).first()
+
+            if user_profile is None:
+                return Response({"error": "User not found or session exprired!"}, status = 404)
+
+            atten_for_user = {}
+            atten_objs_for_single_user = Attendence.objects.filter(user = user_profile.user)
+            for all_atten in atten_objs_for_single_user:
+                attendences_of_month = getAttendenceFromString(all_atten.att_string)
+                atten_for_user[str(all_atten.month)] = attendences_of_month
+
+            return Response({"message": "Data Recieved Sucessfully", 
+                             "admin":False,
+                             "username": _user.username,
+                             "data": atten_for_user}, status = 200)
+
+    
+class BackupDatabase(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        _user = request.user
+
+        if _user.is_superuser:
+            profiles = UserProfile.objects.all()
+
+            data = {}
+            for profile in profiles:
+                _uid = profile.uid
+                atten_objs_for_single_user = Attendence.objects.filter(user = profile.user)
+                atten_for_user = {}
+                for all_atten in atten_objs_for_single_user:
+                    attendences_of_month = getAttendenceFromString(all_atten.att_string)
+                    atten_for_user[str(all_atten.month)] = attendences_of_month
+
+                data[profile.user.username] = atten_for_user
+
+            filename = str(datetime.datetime.today().strftime("%Y-%m-%d")) + ".json"
+
+            with open("BACKUPS/"+filename, "w") as outfile:
+                json.dump(data, outfile)
+            
+            return Response({"message": "Data Backed-Up Sucessfully"}, 
+                             status = 200)
+
+        else:
+            return Response({"message": "You do not have required Credential to perform this action."}, status = 404)
 
 
 

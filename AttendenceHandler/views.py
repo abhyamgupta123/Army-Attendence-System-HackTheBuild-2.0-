@@ -59,7 +59,13 @@ class RecordAttendence(APIView):
                 startDateString = f"{getYear()}-{getMonth()}-{1}"
                 startMonthDate = datetime.datetime.strptime(startDateString, "%Y-%m-%d")
 
-                Attendence.objects.create(user=_user, month=startMonthDate, att_string=attendence_string[3:])
+                atten_obj = Attendence.objects.filter(user=_user, month=startMonthDate).first()
+                if atten_obj is None:
+                    Attendence.objects.create(user=_user, month=startMonthDate, att_string=attendence_string[3:])
+                else:
+                    atten_obj.att_string = attendence_string[3:]
+                    atten_obj.save()
+
                 return Response({"message": "Attendence marked sucessfully!"}, status = HTTP_200_OK)
 
         else:
