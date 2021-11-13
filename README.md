@@ -33,12 +33,47 @@ Each user can request the system to show his/her attendence by using its card an
 - Very friendly UI, anyone can use our system without any extra guidance.
 - Easy to carry physical attendence card or keyring cards. 
 - Low Enerygy requirement, can be powered up using only powerbank.
+- Secure, it will inform if someone tried to change the attendence data in the card forcefully.
+- Data stored in RFID cards of each individual is encrypted. 
+- Backup of server to online cloud or in offline system.
 
 <br>
 <hr> 
 <br>
 
 ## Features of Our System.
+
+- User Registration
+    ![User Registeration](Resources/s1.png)
+
+- User Login 
+    - Here user can login to see his previous months or long time ago attendences.
+    ![User Login](Resources/s2.png)
+    ![User Login2](Resources/s9.png)
+
+- User can see his current attendence just by scanning his/her card offline
+    ![Scan1](Resources/s5.png)
+    ![Scan1](Resources/s12.png)
+
+- User can see his/her attendence card offline by scanning their cards.
+    ![Scan1](Resources/s5.png)
+
+- Admin can format the card to reassign this or any other user or someone can verify the card details that which card belongs to which user by using our inbuilt feature, just in case if someone lost his/her card.
+    ![Scan3](Resources/s3.png)
+
+- Admin can delete the User if User doesn't exsist or its data is no longer in use.
+    ![Scan1](Resources/s4.png)
+
+- Admin can see attndences of all users.
+    ![Scan1](Resources/s10.png)
+
+- User can mark attendence in a very hasslefree manner.
+    ![Scan1](Resources/s7.png)
+    ![Scan1](Resources/s8.png)
+    ![Scan1](Resources/s13.png)
+
+- Admin can also take the backup of server stored data in his admin panel options.
+
 
 
 <br>
@@ -66,7 +101,7 @@ The installation process will contain two parts: Hardware and Software.
 
     * #### Get a Powerbank for powering on the system.
 
-## Software Setup
+- ## Software Setup
 
     - Open the Terminal using `Alt+Ctrl+T` shortcut, or by right clicking on desktop of raspian clicking on open terminal option. 
 
@@ -101,20 +136,44 @@ The installation process will contain two parts: Hardware and Software.
         $ python3.7 -m pip install -r requirements.txt
         ```
 
-    - Now turn on the server using.
+    - Now turn on backend the server1 by.
         ```
         $ python3.7 manage.py runserver 0.0.0.0:8000
         ```
 
     
+    - Now go to Hack1 folder by
+        ```
+        $ cd Hack1
+        ```
+
+    - Obtain your current IP address by 
+        ```
+        $ hostname -I
+        ```
+
+    - Now start the server 2 by
+        ```
+        $ python3.7 -m http.server 9000
+        ```
+
+    Now you can visit the webite provided by our service from any browser whose system is connected to that raspberry pi with hostspot/wifi/LAN.
+
+    Your perosonal link will be like `http://\<YOUR IP ADDRESS\>:9000`
+    > Here you need to replace \<YOUR IP ADDRESS\> with your obtiained IP address that you have obtained from command `hostname -I` in previous step.
 
 
+Now you are good to go with out portable and Smart Attendence System to Mark Attendence of Army Personals in your organisation.
+    
 
 
+## Video Link:-
+> [https://www.youtube.com/watch?v=aL5An1gLX44](https://www.youtube.com/watch?v=aL5An1gLX44)
 
-
-
-
+## Our Hardware Setup.
+![Picture 1](Resources/a1.jpeg)
+![Picture 2](Resources/a2.jpeg)
+![Picture 3](Resources/a3.jpeg)
 
 
 
